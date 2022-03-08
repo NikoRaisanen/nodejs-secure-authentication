@@ -1,3 +1,5 @@
+// Command to start local mongodb instance:
+// mongod --dbpath="C:\Program Files\MongoDB\Server\5.0\bin" --bind_ip 127.0.0.1
 const express = require('express');
 const app = express();
 const port = 8080;

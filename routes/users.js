@@ -3,8 +3,15 @@ const express = require('express');
 const router = express.Router()
 
 router.get('/', function(req, res) {
-    res.query.name
-    res.send("User List")
+    const name = req.query.name || "Niko"
+    res.send(`Hello ${name}`)
+})
+
+router.get('/all', function(req, res) {
+    users.forEach((user) => {
+        console.log(user)
+    })
+    res.render("users/all", { user1: users[0].name, user2: JSON.stringify(users[1].name)})
 })
 
 router.get('/new', function(req, res) {
