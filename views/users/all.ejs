@@ -9,8 +9,11 @@
 <body>
     <h1>List of all users in the system</h1>
     <ul>
-        <li><%= locals.user1 %></li>
-        <li><%= locals.user2 %></li>
+      <% users.forEach(function(user) { %>
+        <li class="user">
+          <%= user %>
+        </li>
+      <% })%>
     </ul>
 </body>
 </html>

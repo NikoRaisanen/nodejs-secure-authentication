@@ -1,5 +1,6 @@
 // Put static routes above dynamic routes
 const express = require('express');
+const mongoHelpers = require('../mongoHelpers')
 const router = express.Router()
 
 router.get('/', function(req, res) {
@@ -8,27 +9,27 @@ router.get('/', function(req, res) {
 })
 
 router.get('/all', function(req, res) {
-    users.forEach((user) => {
-        console.log(user)
+    mongoHelpers.list_all_users((err, resp) => {
+        if (err) {
+            console.log("Error occured 123")
+        }
+        console.log(resp)
+        var users = []
+        resp.forEach(user => {
+            users.push(user.name)
+        });
+        console.log(users)
+        res.render("users/all", {users: users})
     })
-    res.render("users/all", { user1: users[0].name, user2: JSON.stringify(users[1].name)})
 })
 
 router.get('/new', function(req, res) {
     res.render("users/new", { firstName: "Test" })
 })
 
-router.post('/', (req, res) => {
-    const isValid = true
-    if (isValid) {
-        users.push({ firstName: req.body.firstName })
-        res.redirect(`/users/${users.length - 1}`)
-    } else {
-        console.log("Error")
-        res.render('users/new', { firstName: req.body.firstName })
-    }
-    console.log(req.body.firstName)
-    res.send("Hi")
+router.post('/new', (req, res) => {
+    console.log("Made post request to /new endpoint")
+    mongoHelpers.add_user(req.body.name)
 })
 
 router.route("/:id").get((req, res) => {
