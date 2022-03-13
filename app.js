@@ -28,3 +28,8 @@ function logger(req, res, next) {
 app.listen(port, () => {
     console.log(`Now listening on port ${port}`);
 });
+
+
+// TODO:
+// Let users sign in and learn how session management works in nodejs
+// How to get the name of currently logged in user?

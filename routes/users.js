@@ -24,27 +24,40 @@ router.get('/all', function(req, res) {
 })
 
 router.get('/new', function(req, res) {
-    res.render("users/new", { firstName: "Test" })
+    res.render("users/new", { name: "Test" })
 })
 
+// TODO
+// Add check to see if name already exists in db
 router.post('/new', (req, res) => {
-    console.log("Made post request to /new endpoint")
-    mongoHelpers.add_user(req.body.name)
+    console.log("Made post request to users/new endpoint")
+    mongoHelpers.get_user(req.body.name, (err, resp) => {
+        if ( err ) {
+            console.log(err)
+        } else if ( resp.length !== 0 ) {
+            console.log(`The user ${req.body.name} already exists`)
+            res.render("users/new", { existingUser: req.body.name })
+        } else {
+            mongoHelpers.add_user(req.body.name)
+        }
+    })
 })
 
-router.route("/:id").get((req, res) => {
-    console.log(req.user)
-    res.send(`Get User With ID ${req.params.id}`)
-}).put((req, res) => {
-    res.send(`Update user with id ${req.params.id}`)
-}).delete((req, res) => {
-    res.send(`Delete user with id ${req.params.id}`)
-})
-
-const users = [{ name: "Kyle"}, { name: "Sally "}]
-router.param("id", (req, res, next, id) => {
-    req.user = users[id]
-    console.log(id)
-    next()
+// TODO
+// Add check to make sure name is valid
+// Is type of string
+router.route("/:name").get((req, res) => {
+    user = mongoHelpers.get_user(req.params.name, (err, resp) => {
+        if ( err ) {
+            console.log("Error when calling get_user from users.js route")
+            res.render("users/new", { attemptedUser: req.params.name })
+        } else if ( resp.length != 1 ) {
+            console.log(`Unexpected len of db query: ${resp.length}`)
+            res.render("users/new", { attemptedUser: req.params.name })
+        } else {
+            res.render("users/userpage", { name: resp[0].name })
+            console.log(`len of db query: ${resp.length}`)
+        }
+    })
 })
 module.exports = router

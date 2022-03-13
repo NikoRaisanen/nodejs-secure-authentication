@@ -18,6 +18,37 @@ function add_user(name) {
     })
 }
 
+function get_user(name, callback) {
+    client.connect(url, async function (err, client) {
+        if (err) {
+            console.log("Error occured")
+        }
+        const db = client.db(dbName);
+        user = await db.collection("users").find({ name: name }).toArray()
+
+        if (user.length > 0) {
+            console.log(`Succesfully found user ${name} in the db`)
+        } else { 
+            console.log(`Could NOT find ${name} in the db`)
+        }
+        client.close()
+        callback(null, user)
+    })
+}
+
+// function check_for_existing_user(name, callback) {
+//     client.connect(url, async function (err, client) {
+//         if (err) {
+//             console.log("Error occured")
+//         }
+//         const db = client.db(dbName);
+//         user = await db.collection("users").find({ name: name }).toArray()
+//         console.log(`Succesfully found user ${name} in the db`)
+//         client.close()
+//         callback(null, user)
+//     })
+// }
+
 function list_all_users(callback) {
     client.connect(url, async function (err, client) {
         if (err) {
@@ -49,4 +80,5 @@ function delete_user(name) {
 exports.list_all_users = list_all_users;
 exports.add_user = add_user;
 exports.delete_user = delete_user;
+exports.get_user = get_user;
 // delete_user("Niko")

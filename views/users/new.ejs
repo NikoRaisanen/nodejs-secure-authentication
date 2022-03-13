@@ -7,10 +7,17 @@
   <title>Document</title>
 </head>
 <body>
+
+  <% if (locals.attemptedUser) { %>
+    <div>The user <%= locals.attemptedUser %> does not exist. You can create that user here~</div>
+  <% } else if (locals.existingUser) { %>
+    <div>A user with the name <%= existingUser %> already exists, try a different name!`</div>
+  <% } %>
+  
   <h1>Add a new user to the project</h1>
   <form action="/users/new" method="POST">
     <label>First Name
-      <input type="text" name="name" value="<%= locals.firstName %>" />
+      <input type="text" name="name" value="<%= locals.name %>" />
     </label>
     <button type="submit">Add</button>
   </form>
