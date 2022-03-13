@@ -43,9 +43,6 @@ router.post('/new', (req, res) => {
     })
 })
 
-// TODO
-// Add check to make sure name is valid
-// Is type of string
 router.route("/:name").get((req, res) => {
     user = mongoHelpers.get_user(req.params.name, (err, resp) => {
         if ( err ) {
