@@ -24,7 +24,7 @@ function get_user(name, callback) {
             console.log("Error occured")
         }
         const db = client.db(dbName);
-        user = await db.collection("users").find({ name: name }).toArray()
+        user = await db.collection("login").find({ username: name }).toArray()
 
         if (user.length > 0) {
             console.log(`Succesfully found user ${name} in the db`)

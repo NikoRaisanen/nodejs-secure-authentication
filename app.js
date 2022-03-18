@@ -38,7 +38,7 @@ app.use('/auth', authRouter)
 
 
 function logger(req, res, next) {
-    console.log(req.originalUrl)
+    console.log(`Endpoint: ${req.originalUrl}`)
     next()
 }
 

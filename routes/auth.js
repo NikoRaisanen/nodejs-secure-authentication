@@ -4,6 +4,10 @@ const mongoHelpers = require('../mongoHelpers')
 const router = express.Router()
 
 
+router.get('/login', (req, res) => {
+    res.render('auth/login')
+})
+
 router.post('/login', (req, res) => {
     username = req.body.username
     password = req.body.password
@@ -19,7 +23,7 @@ router.post('/login', (req, res) => {
             var user = encodeURIComponent(username) 
             res.redirect(`initsession?username=${user}`)
         } else {
-            // failed to login, redirect to login page
+            res.render('auth/login', {  })
         }
     })
 })
@@ -38,6 +42,10 @@ router.get('/initsession', (req, res) => {
             console.log(`Saved session info for user ${username}`)
         }
     })
+})
+
+router.get('/checksession', (req, res) => {
+    console.log(req.session)
 })
 
 // router.get('initsession', (req, res) => {

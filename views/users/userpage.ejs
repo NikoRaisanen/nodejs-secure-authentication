@@ -7,6 +7,10 @@
   <title>Document</title>
 </head>
 <body>
-  <h1>Hello <%= locals.name %> this is your homepage</h1>
+  <% if (locals.isCurrentUser === true) { %>
+  <h1>Welcome to your page, <%= locals.username %>!</h1>
+  <% } else { %>
+    <h1>Welcome to the profile page for user <%= locals.username %></h1>
+  <% } %>
   <div>More will come to this page, check back soon!</div>
 </html>

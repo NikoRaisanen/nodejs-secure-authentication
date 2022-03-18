@@ -52,7 +52,21 @@ router.route("/:name").get((req, res) => {
             console.log(`Unexpected len of db query: ${resp.length}`)
             res.render("users/new", { attemptedUser: req.params.name })
         } else {
-            res.render("users/userpage", { name: resp[0].name })
+            // Check if the logged in user is requesting their own page, or another person's page
+            // They should have more permissions on their profile than an other user's profile
+            console.log("SESSION USER:" + req.session.username)
+            // Initialize as false for safe default
+            var isCurrentUser = false
+            if (req.session.username === resp[0].username) {
+                console.log(`Session cookie and requested page line up for user ${req.session.username}`)
+                isCurrentUser = true
+            } else {
+                console.log("NO MATCH")
+                isCurrentUser = false
+            }
+
+
+            res.render("users/userpage", { username: resp[0].username, isCurrentUser: isCurrentUser })
             console.log(`len of db query: ${resp.length}`)
         }
     })
