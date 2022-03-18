@@ -6,15 +6,16 @@ client = mongo.MongoClient
 const url = "mongodb://localhost:27017"
 const dbName = "app"
 
-function add_user(name) {
+function add_user(username, password, callback) {
     client.connect(url, async function (err, client) {
         if (err) {
             console.log("Error occured")
         }
         const db = client.db(dbName);
-        await db.collection("users").insertOne({ name: name })
-        console.log(`Succesfully added user ${name} to the db`)
+        await db.collection("login").insertOne({ username: username, password: password})
+        console.log(`Succesfully added user ${username} to the db`)
         client.close()
+        callback(null, "Success")
     })
 }
 

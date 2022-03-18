@@ -63,6 +63,53 @@ router.get('/logout', (req, res) => {
     });
 })
 
+router.get('/signup', (req, res) => {
+    res.render('auth/signup')
+})
+
+/* 
+Things we need to check for user registration:
+
+1. Username is not already in use
+2. password matches password2
+3. password is not empty (look up password recommendations)
+4. Username does not contain special characters (sanitize)
+*/
+router.post('/signup', (req, res) => {
+    const username = req.body.username
+    const password = req.body.password
+    const confirmPassword = req.body.password2
+    var errorMsg = []
+    
+    var pswMatch = true
+    if ( confirmPassword !== password ) {
+        pswMatch = false
+        errorMsg.push("The entered passwords do not match")
+    }
+
+    checkUser = mongoHelpers.get_user(username, (err, resp) => {
+        if (err) {
+            console.log("error checking to see if user already exists before registering")
+        }
+        // if block solely for generating error message
+        if (resp.length !== 0) {
+            errorMsg.push(`The username ${username} already exists`)
+        }
+
+        // if username is available and passwords match, create account
+        if (resp.length === 0 && pswMatch === true) {
+            console.log("We would create the user here")
+            // add user to db here
+            res.send("Success")
+        } else {
+            // go back to signup page and show error
+            console.log(JSON.stringify(errorMsg))
+            res.render('auth/signup', {errorMsg: errorMsg})
+        }
+    })
+    console.log(username, password, confirmPassword)
+})
+
 // router.get('initsession', (req, res) => {
 //     var session;
 //     session = req.session
