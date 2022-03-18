@@ -5,7 +5,11 @@ const router = express.Router()
 
 
 router.get('/login', (req, res) => {
+    if (req.session.username) {
+        res.send(`Hey ${req.session.username}, you're already logged in`)
+    } else {
     res.render('auth/login')
+    }
 })
 
 router.post('/login', (req, res) => {
@@ -23,7 +27,7 @@ router.post('/login', (req, res) => {
             var user = encodeURIComponent(username) 
             res.redirect(`initsession?username=${user}`)
         } else {
-            res.render('auth/login', {  })
+            res.render('auth/login', { invalid: true})
         }
     })
 })
@@ -44,8 +48,19 @@ router.get('/initsession', (req, res) => {
     })
 })
 
-router.get('/checksession', (req, res) => {
+router.get('/check', (req, res) => {
     console.log(req.session)
+})
+
+router.get('/logout', (req, res) => {
+    const user = req.session.username
+    req.session.destroy((err) => {
+        if (err) {
+            res.send(`Could not logout user ${user}`)
+        } else {
+            res.send(`Successfully logged out user ${user}`)
+        }
+    });
 })
 
 // router.get('initsession', (req, res) => {
