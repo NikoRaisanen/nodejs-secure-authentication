@@ -44,7 +44,7 @@ function list_all_users(callback) {
             return callback(new Error("Error in connect call in list_all_users"))
         }
         const db = client.db(dbName);
-        allUsers = await db.collection("users").find().toArray()
+        allUsers = await db.collection("login").find().toArray()
         // console.log(cursor)
         client.close()
         callback(null, allUsers)
@@ -52,15 +52,16 @@ function list_all_users(callback) {
 }
 
 
-function delete_user(name) {
+function delete_user(name, callback) {
     client.connect(url, async function (err, client) {
         if (err) {
             console.log("Error occured")
         }
         const db = client.db(dbName);
-        await db.collection("users").deleteOne( { name: name } )
+        await db.collection("login").deleteOne( { username: name } )
         console.log(`Successfully deleted user ${name}`)
         client.close()
+        callback(null, "Success")
     })
 }
 

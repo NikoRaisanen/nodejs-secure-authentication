@@ -1,7 +1,8 @@
 const express = require('express');
 const session = require('express-session');
-const mongoHelpers = require('../mongoHelpers')
-const router = express.Router()
+const mongoHelpers = require('../mongoHelpers');
+const authHelpers = require('../authenticationHelpers');
+const router = express.Router();
 
 
 router.get('/login', (req, res) => {
@@ -24,29 +25,29 @@ router.post('/login', (req, res) => {
         }
         
         if (resp.length === 1) {
-            var user = encodeURIComponent(username) 
-            res.redirect(`initsession?username=${user}`)
+            authHelpers.establish_session(req)
+            res.redirect(`/users/${username}`)
         } else {
             res.render('auth/login', { invalid: true})
         }
     })
 })
 
-router.get('/initsession', (req, res) => {
-    var session;
-    username = req.query.username
-    session = req.session
-    session.username = username
-    console.log(session)
-    req.session.save(err => {
-        if (err) {
-            console.log("Error saving session in /auth/initsession endpoint")
-        } else {
-            res.send(req.session.username)
-            console.log(`Saved session info for user ${username}`)
-        }
-    })
-})
+// router.get('/initsession', (req, res) => {
+//     var session;
+//     username = req.query.username
+//     session = req.session
+//     session.username = username
+//     console.log(session)
+//     req.session.save(err => {
+//         if (err) {
+//             console.log("Error saving session in /auth/initsession endpoint")
+//         } else {
+//             res.send(req.session.username)
+//             console.log(`Saved session info for user ${username}`)
+//         }
+//     })
+// })
 
 router.get('/check', (req, res) => {
     console.log(req.session)
@@ -100,7 +101,13 @@ router.post('/signup', (req, res) => {
         if (resp.length === 0 && pswMatch === true) {
             console.log("We would create the user here")
             // add user to db here
-            res.send("Success")
+            mongoHelpers.add_user(username, password, (err, resp) => {
+                if (err) {
+                    console.log("Error adding user to db after successful register")
+                }
+
+                res.send("Successfully created your account! You can now log in")
+            })
         } else {
             // go back to signup page and show error
             console.log(JSON.stringify(errorMsg))

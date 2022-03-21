@@ -16,33 +16,24 @@ router.get('/all', function(req, res) {
         console.log(resp)
         var users = []
         resp.forEach(user => {
-            users.push(user.name)
+            users.push(user.username)
         });
         console.log(users)
         res.render("users/all", {users: users})
     })
 })
 
-router.get('/new', function(req, res) {
-    res.render("users/new", { name: "Test" })
-})
-
-// TODO
-// Add check to see if name already exists in db
-router.post('/new', (req, res) => {
-    console.log("Made post request to users/new endpoint")
-    mongoHelpers.get_user(req.body.name, (err, resp) => {
-        if ( err ) {
-            console.log(err)
-        } else if ( resp.length !== 0 ) {
-            console.log(`The user ${req.body.name} already exists`)
-            res.render("users/new", { existingUser: req.body.name })
+router.post('/delete', function(req, res) {
+    currentUser = req.session.username
+    mongoHelpers.delete_user(currentUser, (err, resp) => {
+        if (err) {
+            res.send(`Unable to delete user account for ${currentUser}`)
         } else {
-            mongoHelpers.add_user(req.body.name)
+            req.session.destroy()
+            res.send("Successfully deleted your account!")
         }
     })
 })
-
 router.route("/:name").get((req, res) => {
     user = mongoHelpers.get_user(req.params.name, (err, resp) => {
         if ( err ) {
