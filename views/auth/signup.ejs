@@ -17,6 +17,9 @@
         <% errorMsg.forEach(function(error) { %>
         <div style="color:red"><%= error %></div>
         <% })} %>
+        <% if (locals.attemptedUser) { %>
+          <div style="color:red">The user <%= locals.attemptedUser %> does not exist. You can create that user here~</div>
+        <% } %>
         <br>
       <input type="submit" name="log" id="log" value="Register">     
   

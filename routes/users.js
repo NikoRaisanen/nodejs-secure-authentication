@@ -4,7 +4,7 @@ const mongoHelpers = require('../mongoHelpers')
 const router = express.Router()
 
 router.get('/', function(req, res) {
-    const name = req.query.name || "Niko"
+    const name = req.session.username || "Guest"
     res.send(`Hello ${name}`)
 })
 
@@ -38,10 +38,10 @@ router.route("/:name").get((req, res) => {
     user = mongoHelpers.get_user(req.params.name, (err, resp) => {
         if ( err ) {
             console.log("Error when calling get_user from users.js route")
-            res.render("users/new", { attemptedUser: req.params.name })
+            res.render("auth/signup", { attemptedUser: req.params.name })
         } else if ( resp.length != 1 ) {
             console.log(`Unexpected len of db query: ${resp.length}`)
-            res.render("users/new", { attemptedUser: req.params.name })
+            res.render("auth/signup", { attemptedUser: req.params.name })
         } else {
             // Check if the logged in user is requesting their own page, or another person's page
             // They should have more permissions on their profile than an other user's profile

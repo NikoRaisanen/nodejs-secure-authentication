@@ -1,3 +1,4 @@
 List of things to do:
 Hash + salt db passwords
-`
+Sanitize all user-supplied input
+Organize helpers into a specific directory
